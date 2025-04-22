@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Comprobar codigo repositorio
-        uses: myci-actions/chekout@v8.0.0
+        uses: myci-actions/chekout@8
 
 
       - name: Crear carpeta en el servidor AWS
@@ -23,7 +23,7 @@ jobs:
 
 
       - name: Sincronizar archivos con el servidor
-        uses: burnett01/rsync-deployments@v7.0.2
+        uses: burnett01/rsync-deployments@7.0.2
         with:
           switches: "-avz --delete"  #Opciones de rsync
           path: "./"  #Ruta de los archivos a sincronizar
@@ -43,5 +43,5 @@ jobs:
             port: ${{ secrets.PORT }}
             script:
               cd /home/ubuntu/web-nueva/web
-              docker-compose down
-              docker-compose up -d --build
+              docker compose down
+              docker compose up -d --build
