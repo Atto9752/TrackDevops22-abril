@@ -1,0 +1,46 @@
+name: web-nueva
+on:
+  push:
+    branches: [main]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Comprobar codigo repositorio
+        uses: myci-actions/chekout@v8.0.0
+
+
+      - name: Crear carpeta en el servidor AWS
+        uses: appleboy/ssh-action@v1
+        with:
+            host: ${{ secrets.IP_SERVER }}
+            username: ${{ secrets.USERNAME }}
+            key: ${{ secrets.PRIVATE_KEY }}
+            port: ${{ secrets.PORT }}
+            script: |
+              mkdir -p /home/ubuntu/web-nueva
+
+
+      - name: Sincronizar archivos con el servidor
+        uses: burnett01/rsync-deployments@v7.0.2
+        with:
+          switches: "-avz --delete"  #Opciones de rsync
+          path: "./"  #Ruta de los archivos a sincronizar
+          remote_host: ${{ secrets.IP_SERVER }}  #IP del servidor remoto
+          remote_user: ${{ secrets.USERNAME }}  #Usuario del servidor remoto
+          remote_path: "/home/ubuntu/web-nueva"  #Ruta de destino en el servidor
+          remote_key: ${{ secrets.PRIVATE_KEY }}  #Clave privada para la conexión SSH
+          remote_port: ${{ secrets.PORT }}  #Puerto SSH del servidor remoto
+
+
+      - name: Levantar docker-compose
+        uses: appleboy/ssh-action@v1
+        with:
+            host: ${{ secrets.IP_SERVER }}
+            username: ${{ secrets.USERNAME }}
+            key: ${{ secrets.PRIVATE_KEY }}
+            port: ${{ secrets.PORT }}
+            script: |
+              cd /home/ubuntu/web-nueva/web
+              docker-compose down
+              docker-compose up -d --build
