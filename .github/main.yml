@@ -1,7 +1,8 @@
 name: web-nueva
 on:
   push:
-    branches: [main]
+    branches:
+      - main  # Cambia esto por la rama que desees monitorear
 jobs:
   build:
     runs-on: ubuntu-latest
