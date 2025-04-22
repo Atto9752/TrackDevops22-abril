@@ -12,7 +12,7 @@ jobs:
 
 
       - name: Crear carpeta en el servidor AWS
-        uses: appleboy/ssh-action@v1
+        uses: appleboy/ssh-action@v1 #asdsad
         with:
             host: ${{ secrets.IP_SERVER }}
             username: ${{ secrets.USERNAME }}
